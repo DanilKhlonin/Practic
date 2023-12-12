@@ -3,8 +3,8 @@ create procedure syn.usp_ImportFileCustomerSeasonal
 AS
 set nocount on
 begin
-	declare @RowCount int = (select count(*) from syn.SA_CustomerSeasonal)
-	declare @ErrorMessage varchar(max)
+	declare @RowCount int = (select count(*) from syn.SA_CustomerSeasonal),
+	 @ErrorMessage varchar(max)
 
 -- Проверка на корректность загрузки
 	if not exists (
@@ -57,7 +57,8 @@ begin
 	from syn.SA_CustomerSeasonal as cs
 	left join dbo.Customer as c on c.UID_DS = cs.UID_DS_Customer
 		and c.ID_mapping_DataSource = 1
-	left join dbo.Customer as c_dist on c_dist.UID_DS = cs.UID_DS_CustomerDistributor and c_dist.ID_mapping_DataSource = 1
+	left join dbo.Customer as c_dist on c_dist.UID_DS = cs.UID_DS_CustomerDistributor 
+		and c_dist.ID_mapping_DataSource = 1
 	left join dbo.Season as s on s.Name = cs.Season
 	left join syn.CustomerSystemType as cst on cst.Name = cs.CustomerSystemType
 	where c.ID is null
@@ -83,8 +84,7 @@ begin
 	) as s on s.ID_dbo_Customer = cs.ID_dbo_Customer
 		and s.ID_Season = cs.ID_Season
 		and s.DateBegin = cs.DateBegin
-	when matched
-		and t.ID_CustomerSystemType <> s.ID_CustomerSystemType then
+	when matched and t.ID_CustomerSystemType <> s.ID_CustomerSystemType then
 		update
 		set ID_CustomerSystemType = s.ID_CustomerSystemType
 			,DateEnd = s.DateEnd
