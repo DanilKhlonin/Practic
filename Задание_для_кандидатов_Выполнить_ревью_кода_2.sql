@@ -8,9 +8,9 @@ begin
 
 -- Проверка на корректность загрузки
 	if not exists (
-	select 1
-	from syn.ImportFile as f
-	where f.ID = @ID_Record
+	 select 1
+	 from syn.ImportFile as f
+	 where f.ID = @ID_Record
 		and f.FlagLoaded = cast(1 as bit)
 	)
 		begin
@@ -69,7 +69,7 @@ begin
 		or try_cast(isnull(cs.FlagActive, 0) as bit) is null
 
 	-- Обработка данных из файла
-	merge into syn.CustomerSeasonal as cs
+	merge  syn.CustomerSeasonal as cs
 	using (
 		select
 			cs_temp.ID_dbo_Customer
